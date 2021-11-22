@@ -26,6 +26,36 @@ brew install jq
 
 ### Configuration
 
+#### config.yaml
+
+config.yaml will be loaded from
+
+```
+~/stock-data/config.yaml
+```
+
+#### Sample configuration 
+
+- For link-to-menu.sh to dispatch scripts
+
+```
+query:
+  dividend-history: [
+    code1,
+    code2,
+    code3
+  ]
+```
+
+Accordingly, following scripts will be created in Script Editor's user library folder:
+
+```
+query-dividend-history.code1.sh
+query-dividend-history.code2.sh
+query-dividend-history.code3.sh
+```
+
+
 #### API Keys
 
 secret.properties will be loaded from
