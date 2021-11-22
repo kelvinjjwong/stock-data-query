@@ -34,7 +34,7 @@ secret.properties will be loaded from
 ~/stock-data/secret.properties
 ```
 
-Following items are expected for APIs of http://webapi.cninfo.com.cn
+Following items are expected for APIs of https://webapi.cninfo.com.cn
 
 ```
 api_cninfo_access_key
