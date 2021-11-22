@@ -10,6 +10,12 @@ jq is required for JSON extraction. To install, run:
 brew install jq
 ```
 
+yq is required for YAML extraction and modification. To install, run:
+
+```
+brew install yq
+```
+
 ### Usage
 
 1. Use link-to-menu.sh to copy scripts to Script Editor's user library folder
