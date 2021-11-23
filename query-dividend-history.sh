@@ -11,6 +11,8 @@ fi
 
 echo "stockcode: $stockcode"
 
+mkdir -p ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic
+
 if [[ ! -e ~/stock-data ]]; then
    mkdir -p ~/stock-data
 fi
@@ -59,10 +61,10 @@ printf '%s\n' "code,name,term,doc,giftshare_per_10share,addshare_per_10share,int
 
 $JQ -r '.records[] | [.SECCODE, .SECNAME, .F044V, .F036V, .F010N, .F011N, .F012N, .F001D, .F018D, .F020D, .F023D] | @csv' dividend-history-${stockcode}.json >> dividend-history-${stockcode}.csv
 
-cp dividend-history-${stockcode}.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents
+cp dividend-history-${stockcode}.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/
 
 echo 
 echo "open csv file use: open -a \"Numbers\" dividend-history-${stockcode}.csv"
 echo
-open -a "Numbers" ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/dividend-history-${stockcode}.csv
+open -a "Numbers" ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/dividend-history-${stockcode}.csv
 

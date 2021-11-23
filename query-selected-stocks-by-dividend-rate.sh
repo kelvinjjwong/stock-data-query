@@ -1,6 +1,8 @@
 #!/bin/bash
 config_file=~/stock-data/config.yaml
 
+mkdir -p ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic
+
 if [[ ! -e ~/stock-data ]]; then
    mkdir -p ~/stock-data
 fi
@@ -41,11 +43,11 @@ fi
 
 filename=prices-selection-`date '+%Y-%m-%d_%H-%M-%S'`.csv
 cp selection-latest.csv $filename
-cp $filename ~/Library/Mobile\ Documents/com~apple~Numbers/Documents
-cp selection-latest.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/selection-latest.csv
+cp $filename ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic/
+cp selection-latest.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/selection-latest.csv
 
 echo 
 echo "open csv file use: open -a \"Numbers\" selection-latest.csv"
 echo
-open -a "Numbers" ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/$filename
+open -a "Numbers" ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic/$filename
 

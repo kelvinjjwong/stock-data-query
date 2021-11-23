@@ -1,4 +1,7 @@
 #!/bin/bash
+
+mkdir -p ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic
+
 if [[ ! -e ~/stock-data ]]; then
    mkdir -p ~/stock-data
 fi
@@ -30,11 +33,11 @@ fi
 
 filename=prices-`date '+%Y-%m-%d_%H-%M-%S'`.csv
 cp records-latest.csv $filename
-cp $filename ~/Library/Mobile\ Documents/com~apple~Numbers/Documents
-cp records-latest.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/prices-latest.csv
+cp $filename ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic/
+cp records-latest.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/prices-latest.csv
 
 echo 
 echo "open csv file use: open -a \"Numbers\" records-latest.csv"
 echo
-open -a "Numbers" ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/$filename
+open -a "Numbers" ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic/$filename
 
