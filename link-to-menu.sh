@@ -14,8 +14,10 @@ if [[ ! -e $config_file ]]; then
   echo "You can configure in $config_file"
 fi
 
-
+cp ./add-stock-code-by-select.sh $target_folder/
+cp ./add-stock-code-by-input.sh $target_folder/
 cp ./query-stocks-by-dividend-rate.sh $target_folder/
+cp ./query-selected-stocks-by-dividend-rate.sh $target_folder/
 
 yq e '.query.dividend-history[]' $config_file | while read code;
 do
