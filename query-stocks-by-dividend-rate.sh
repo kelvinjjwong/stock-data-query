@@ -1,19 +1,32 @@
 #!/bin/bash
 
+data_folder=~/stock-data
+config_folder=~/stock-data/config
+template_folder=~/stock-data/template
+historic_folder=~/stock-data/historic
+icloud_data=~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data
+icloud_historic=$icloud_data/historic
+
+config_file=$config_folder/config.yaml
+application_config=$config_folder/application.yaml
+
 mkdir -p ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic
 
-if [[ ! -e ~/stock-data ]]; then
-   mkdir -p ~/stock-data
+if [[ ! -e $data_folder ]]; then
+   mkdir -p $data_folder
 fi
-cd ~/stock-data/
+cd $data_folder
 
 mac_arch=`uname -m`
-if [[ ${mac_arch} = "i386" ]]; then
-	JQ=/usr/local/bin/jq
+if [[ ${mac_arch} = "i386" ]] || [[ ${mac_arch} = "x86_64" ]]; then
+  JQ=/usr/local/bin/jq
+  YQ=/usr/local/bin/yq
 elif [[ ${mac_arch} = "arm64" ]]; then
-	JQ=/opt/homebrew/bin/jq
+  JQ=/opt/homebrew/bin/jq
+  YQ=/opt/homebrew/bin/yq
 else
-	JQ=jq
+  JQ=jq
+  YQ=yq
 fi
 
 echo "jq is required. to install, run: brew install jq"
@@ -31,10 +44,21 @@ if [[ $lines -lt 2 ]]; then
    exit 1;
 fi
 
-filename=prices-`date '+%Y-%m-%d_%H-%M-%S'`.csv
+langs=(`defaults read NSGlobalDomain AppleLanguages`);
+lang=`echo ${langs[1]/,/} | sed -e 's/\"//g'  | awk -F'-' '{print $1}'`
+if [[ "$lang" != "zh" ]]; then
+  lang=en
+fi
+
+LANG_PRICES=`$YQ e ".translation.output.prices.$lang" $application_config`
+LANG_SELECTION=`$YQ e ".translation.output.selection.$lang" $application_config`
+LANG_DATE=`$YQ e ".translation.output.date.$lang" $application_config`
+LANG_LATEST=`$YQ e ".translation.output.latest.$lang" $application_config`
+
+filename=${LANG_PRICES}-`date "+${LANG_DATE}"`.csv
 cp records-latest.csv $filename
-cp $filename ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic/
-cp records-latest.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/prices-latest.csv
+cp $filename ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic/$filename
+cp records-latest.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/${LANG_PRICES}-${late}.csv
 
 echo 
 echo "open csv file use: open -a \"Numbers\" records-latest.csv"

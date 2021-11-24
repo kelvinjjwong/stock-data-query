@@ -1,6 +1,25 @@
 #!/bin/bash
 
-config_file=~/stock-data/config.yaml
+data_folder=~/stock-data
+config_folder=~/stock-data/config
+template_folder=~/stock-data/template
+historic_folder=~/stock-data/historic
+target_folder=~/Library/Scripts/Stock-Data
+
+config_file=$config_folder/config.yaml
+application_config=$config_folder/application.yaml
+
+mac_arch=`uname -m`
+if [[ ${mac_arch} = "i386" ]] || [[ ${mac_arch} = "x86_64" ]]; then
+  JQ=/usr/local/bin/jq
+  YQ=/usr/local/bin/yq
+elif [[ ${mac_arch} = "arm64" ]]; then
+  JQ=/opt/homebrew/bin/jq
+  YQ=/opt/homebrew/bin/yq
+else
+  JQ=jq
+  YQ=yq
+fi
 
 AS_OUTPUT="$(osascript <<EOD
   set theResponse to display dialog "Stock code?" default answer "" with icon note buttons {"Cancel", "Continue"} default button "Continue"
@@ -41,6 +60,24 @@ fi
 MSG="Added stock code $INPUT_TEXT to $config_file"
 echo $MSG
 cat $config_file
+
+langs=(`defaults read NSGlobalDomain AppleLanguages`);
+lang=`echo ${langs[1]/,/} | sed -e 's/\"//g'  | awk -F'-' '{print $1}'`
+if [[ "$lang" != "zh" ]]; then
+  lang=en
+fi
+
+echo "language=$lang"
+
+
+FILE_QUERY_DIVIDEND_HISTORY=`yq e ".translation.script.query-dividend-history.$lang" $application_config`
+
+rm -f $target_folder/$FILE_QUERY_DIVIDEND_HISTORY.*
+
+yq e '.selected.stockcode[]' $config_file | while read code;
+do
+  cp $template_folder/query-dividend-history.sh $target_folder/$FILE_QUERY_DIVIDEND_HISTORY.${code}
+done
 
 osascript <<EOD
 display notification "$config_file" with title "Stock Data" subtitle "Added stock code $INPUT_TEXT" sound name "Frog"

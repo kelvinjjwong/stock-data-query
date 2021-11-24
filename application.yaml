@@ -15,3 +15,22 @@ translation:
     query-selected-stocks-by-dividend-rate:
       en: "Query-Selected-Stocks-by-Dividend-Rate"
       zh: "报价-自选-按股息率排行"
+    remove-stock-code:
+      en: "Remove-Stock-Code"
+      zh: "删除自选"
+  output:
+    dividend-history:
+      en: "Dividend-History"
+      zh: "股息历史"
+    prices:
+      en: "prices"
+      zh: "报价"
+    selection:
+      en: "selection"
+      zh: "自选"
+    latest:
+      en: "latest"
+      zh: "最新"
+    date:
+      en: "%Y-%m-%d_%H-%M-%S"
+      zh: "%Y年%m月%d日%H点%M分%S秒"
