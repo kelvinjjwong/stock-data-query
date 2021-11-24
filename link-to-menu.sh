@@ -13,7 +13,7 @@ fi
 
 if [[ ! -e $config_file ]]; then
   touch $config_file
-  yq e -i '.query.dividend-history[0] = 600000' $config_file
+  yq e -i '.selected.stockcode[0] = 600000' $config_file
   echo "You can configure in $config_file"
 fi
 
@@ -29,12 +29,14 @@ FILE_QUERY_STOCKS_BY_DIVIDED_RATE=`yq e ".translation.script.query-stocks-by-div
 FILE_QUERY_SELECTED_STOCKS_BY_DIVIDED_RATE=`yq e ".translation.script.query-selected-stocks-by-dividend-rate.$lang" $application_config`
 FILE_QUERY_DIVIDEND_HISTORY=`yq e ".translation.script.query-dividend-history.$lang" $application_config`
 
+rm -f $target_folder/*
+
 cp ./add-stock-code-by-select.sh $target_folder/$FILE_ADD_STOCK_BY_SELECT
 cp ./add-stock-code-by-input.sh $target_folder/$FILE_ADD_STOCK_BY_INPUT
 cp ./query-stocks-by-dividend-rate.sh $target_folder/$FILE_QUERY_STOCKS_BY_DIVIDED_RATE
 cp ./query-selected-stocks-by-dividend-rate.sh $target_folder/$FILE_QUERY_SELECTED_STOCKS_BY_DIVIDED_RATE
 
-yq e '.query.dividend-history[]' $config_file | while read code;
+yq e '.selected.stockcode[]' $config_file | while read code;
 do
   cp ./query-dividend-history.sh $target_folder/$FILE_QUERY_DIVIDEND_HISTORY.${code}
 done

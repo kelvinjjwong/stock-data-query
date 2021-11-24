@@ -11,8 +11,7 @@ translation:
       zh: "股息历史"
     query-stocks-by-dividend-rate:
       en: "Query-Stocks-by-Dividend-Rate"
-      zh: "查询股票报价按股息率排行"
+      zh: "报价-按股息率排行"
     query-selected-stocks-by-dividend-rate:
       en: "Query-Selected-Stocks-by-Dividend-Rate"
-      zh: "查询自选股报价按股息率排行"
-  
+      zh: "报价-自选-按股息率排行"
