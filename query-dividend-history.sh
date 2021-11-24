@@ -10,6 +10,11 @@ icloud_historic=$icloud_data/historic
 secret_properties=$config_folder/secret.properties
 application_config=$config_folder/application.yaml
 
+mkdir -p $data_folder
+mkdir -p $config_folder
+mkdir -p $template_folder
+mkdir -p $historic_folder
+
 stockcode="601006"
 startdate="19950101"
 enddate="`date '+%Y'`1231"
@@ -83,14 +88,38 @@ fi
 echo "jq is required. to install, run: brew install jq"
 echo
 
+echo > $data_folder/curl.out
 curl --location --request POST 'http://webapi.cninfo.com.cn/api-cloud-platform/oauth2/token?grant_type=client_credentials' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-raw "grant_type=client_credentials&client_id=${api_cninfo_access_key}&client_secret=${api_cninfo_access_secret}" \
--o $config_folder/cninfo-key-latest.json
+-o $config_folder/cninfo-key-latest.json 2>$data_folder/curl.out
+CURL_OUT=`cat $data_folder/curl.out | tail -1`
+if [[ $CURL_OUT != "" ]] && [[ $CURL_OUT = curl* ]]; then
+  echo $CURL_OUT
+
+osascript <<EOD
+display notification "$CURL_OUT" with title "Stock Data" subtitle "Unable to access cninfo.com.cn" sound name "Frog"
+EOD
+  exit 1;
+
+fi
+
 
 token=`$JQ -r '[.access_token] | @csv' $config_folder/cninfo-key-latest.json | sed -e 's/\"//g'`
 
-curl --location --request GET "http://webapi.cninfo.com.cn/api/stock/p_stock2201?scode=${stockcode}&sdate=${startdate}&edate=${enddate}&state=1&access_token=${token}" -o dividend-history-${stockcode}.json
+echo > $data_folder/curl.out
+curl --location --request GET "http://webapi.cninfo.com.cn/api/stock/p_stock2201?scode=${stockcode}&sdate=${startdate}&edate=${enddate}&state=1&access_token=${token}" -o dividend-history-${stockcode}.json  2>$data_folder/curl.out
+CURL_OUT=`cat $data_folder/curl.out | tail -1`
+if [[ $CURL_OUT != "" ]] && [[ $CURL_OUT = curl* ]]; then
+  echo $CURL_OUT
+
+osascript <<EOD
+display notification "$CURL_OUT" with title "Stock Data" subtitle "Unable to access cninfo.com.cn" sound name "Frog"
+EOD
+  exit 1;
+
+fi
+
 
 printf '%s\n' "code,name,term,doc,giftshare_per_10share,addshare_per_10share,int_per_10share,cutoff_date,reg_date,exit_right_date,int_date" > dividend-history-${stockcode}.csv
 

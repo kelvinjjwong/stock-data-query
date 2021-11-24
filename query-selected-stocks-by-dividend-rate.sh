@@ -12,9 +12,11 @@ application_config=$config_folder/application.yaml
 
 mkdir -p ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic
 
-if [[ ! -e $data_folder ]]; then
-   mkdir -p $data_folder
-fi
+mkdir -p $data_folder
+mkdir -p $config_folder
+mkdir -p $template_folder
+mkdir -p $historic_folder
+
 cd $data_folder
 
 mac_arch=`uname -m`
@@ -39,7 +41,18 @@ echo "jq is required. to install, run: brew install jq"
 echo "see records.csv for result"
 echo
 
-curl 'https://www.jisilu.cn/data/stock/dividend_rate_list/?___jsl=LST' -o records-latest.json
+echo > $data_folder/curl.out
+curl 'https://www.jisilu.cn/data/stock/dividend_rate_list/?___jsl=LST' -o records-latest.json 2>$data_folder/curl.out
+CURL_OUT=`cat $data_folder/curl.out | tail -1`
+if [[ $CURL_OUT != "" ]] && [[ $CURL_OUT = curl* ]]; then
+  echo $CURL_OUT
+
+osascript <<EOD
+display notification "$CURL_OUT" with title "Stock Data" subtitle "Unable to access jisilu.cn" sound name "Frog"
+EOD
+  exit 1;
+
+fi
 
 printf '%s\n' "code,name,price,dividend_rate,dividend_rate_static,dividend_rate_5y,dividend_rate_average,date,time,industry" > selection-latest.csv
 

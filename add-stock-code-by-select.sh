@@ -28,7 +28,19 @@ else
   YQ=yq
 fi
 
-curl 'https://www.jisilu.cn/data/stock/dividend_rate_list/?___jsl=LST' -o $data_file_json
+echo > $data_folder/curl.out
+curl 'https://www.jisilu.cn/data/stock/dividend_rate_list/?___jsl=LST' -o $data_file_json 2>$data_folder/curl.out
+CURL_OUT=`cat $data_folder/curl.out | tail -1`
+if [[ $CURL_OUT != "" ]] && [[ $CURL_OUT = curl* ]]; then
+  echo $CURL_OUT
+
+osascript <<EOD
+display notification "$CURL_OUT" with title "Stock Data" subtitle "Unable to access jisilu.cn" sound name "Frog"
+EOD
+  exit 1;
+
+fi
+
 printf '%s\n' "code,name,price,dividend_rate,dividend_rate_static,dividend_rate_5y,dividend_rate_average,date,time,industry" > $data_file
 $JQ -r '.rows[] | [.id, .cell.stock_nm, .cell.price, .cell.dividend_rate, .cell.dividend_rate2, .cell.dividend_rate5, .cell.dividend_rate_average, .cell.last_dt, .cell.last_time, .cell.industry_nm] | @csv' $data_file_json >> $data_file
 
