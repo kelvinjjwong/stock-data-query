@@ -1,0 +1,18 @@
+translation:
+  script:
+    add-stock-code-by-input:
+      en: "Add-Stock-Code-by-Input"
+      zh: "添加自选-键入"
+    add-stock-code-by-select:
+      en: "Add-Stock-Code-by-Select"
+      zh: "添加自选-选择"
+    query-dividend-history:
+      en: "Dividend-History"
+      zh: "股息历史"
+    query-stocks-by-dividend-rate:
+      en: "Query-Stocks-by-Dividend-Rate"
+      zh: "查询股票报价按股息率排行"
+    query-selected-stocks-by-dividend-rate:
+      en: "Query-Selected-Stocks-by-Dividend-Rate"
+      zh: "查询自选股报价按股息率排行"
+  
