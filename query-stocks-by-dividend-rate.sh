@@ -71,7 +71,7 @@ LANG_LATEST=`$YQ e ".translation.output.latest.$lang" $application_config`
 filename=${LANG_PRICES}-`date "+${LANG_DATE}"`.csv
 cp records-latest.csv $filename
 cp $filename ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/historic/$filename
-cp records-latest.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/${LANG_PRICES}-${late}.csv
+cp records-latest.csv ~/Library/Mobile\ Documents/com~apple~Numbers/Documents/Stock-Data/${LANG_PRICES}-${LANG_LATEST}.csv
 
 echo 
 echo "open csv file use: open -a \"Numbers\" records-latest.csv"

@@ -38,11 +38,11 @@ echo "user input: $INPUT_TEXT"
 
 if [[ ! -e $config_file ]]; then
   touch $config_file
-  yq e -i ".selected.stockcode[0] = $INPUT_TEXT" $config_file
+  $YQ e -i ".selected.stockcode += [$INPUT_TEXT]" $config_file
 else
   LENGTH=`yq e '.selected.stockcode | length' $config_file`
   if [[ "$LENGTH" = "" ]] || [[ "$LENGTH" = "0" ]]; then
-  	yq e -i ".selected.stockcode[0] = $INPUT_TEXT" $config_file
+  	$YQ e -i ".selected.stockcode += [$INPUT_TEXT]" $config_file
   else
   	CONTAINS=`yq e ".selected.stockcode | contains([$INPUT_TEXT])" $config_file`
   	if [[ "$CONTAINS" = "true" ]]; then
@@ -52,7 +52,7 @@ display notification "$config_file" with title "Stock Data" subtitle "Already ex
 EOD
 		exit 0
   	else
-  		yq e -i ".selected.stockcode[$LENGTH] = $INPUT_TEXT" $config_file
+  		$YQ e -i ".selected.stockcode += [$INPUT_TEXT]" $config_file
   	fi
   fi
 fi
@@ -70,12 +70,13 @@ fi
 echo "language=$lang"
 
 
-FILE_QUERY_DIVIDEND_HISTORY=`yq e ".translation.script.query-dividend-history.$lang" $application_config`
+FILE_QUERY_DIVIDEND_HISTORY=`$YQ e ".translation.script.query-dividend-history.$lang" $application_config`
 
-rm -f $target_folder/$FILE_QUERY_DIVIDEND_HISTORY.*
+rm -f $target_folder/${FILE_QUERY_DIVIDEND_HISTORY}.*
 
-yq e '.selected.stockcode[]' $config_file | while read code;
+$YQ e '.selected.stockcode[]' $config_file | while read code;
 do
+  echo "copy template for $code"
   cp $template_folder/query-dividend-history.sh $target_folder/$FILE_QUERY_DIVIDEND_HISTORY.${code}
 done
 
